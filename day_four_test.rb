@@ -42,11 +42,15 @@ end
 
 class Field
   def self.for(key, value)
-    descendants.detect(->{ IgnoredField }) { |descendant| descendant.code == key }.new(value)
+    descendants.detect(->{ self }) { |descendant| descendant.code == key }.new(value)
   end
 
   def self.required_keys
-    descendants.excluding(IgnoredField).map(&:code)
+    descendants.map(&:code)
+  end
+
+  def self.code
+
   end
 
   def code
@@ -56,87 +60,25 @@ class Field
   def initialize(value)
     @value = value
   end
-end
-
-class IgnoredField < Field
-  def self.code
-
-  end
 
   def valid?
     true
   end
 end
 
-class IssueYear < Field
-  def self.code
-    'iyr'
-  end
-
-  def valid?
-    @value.to_i.between?(2010, 2020)
-  end
+def validate_field(code, &block)
+  new_field = Class.new(Field)
+  new_field.define_singleton_method(:code) { code }
+  new_field.define_method(:valid?) { instance_exec(@value, &block) }
 end
 
-class BirthYear < Field
-  def self.code
-    'byr'
-  end
-
-  def valid?
-    @value.to_i.between?(1920, 2002)
-  end
-end
-
-class ExpirationYear < Field
-  def self.code
-    'eyr'
-  end
-
-  def valid?
-    @value.to_i.between?(2020, 2030)
-  end
-end
-
-class Height < Field
-  def self.code
-    'hgt'
-  end
-
-  def valid?
-    @value.to_inches.between?(59, 76)
-  end
-end
-
-class HairColor < Field
-  def self.code
-    'hcl'
-  end
-
-  def valid?
-    @value =~ /\A#[0-9a-f]{6}\z/
-  end
-end
-
-class EyeColor < Field
-  def self.code
-    'ecl'
-  end
-
-  def valid?
-    @value.in?(%w(amb blu brn gry grn hzl oth))
-  end
-end
-
-class PassportID < Field
-  def self.code
-    'pid'
-  end
-
-  def valid?
-    @value =~ /\A\d{9}\Z/
-  end
-end
+validate_field('iyr') { |value| value.to_i.between?(2010, 2020) }
+validate_field('byr') { |value| value.to_i.between?(1920, 2002) }
+validate_field('eyr') { |value| value.to_i.between?(2020, 2030) }
+validate_field('hgt') { |value| value.to_inches.between?(59, 76) }
+validate_field('hcl') { |value| value =~ /\A#[0-9a-f]{6}\z/ }
+validate_field('ecl') { |value| value.in?(%w(amb blu brn gry grn hzl oth)) }
+validate_field('pid') { |value| value =~ /\A\d{9}\Z/ }
 
 class String
   def to_inches
