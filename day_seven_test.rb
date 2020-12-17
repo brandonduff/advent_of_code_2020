@@ -36,7 +36,7 @@ class Bag
 
   def add_child(bag, quantity)
     edge = BagEdge.new(child: bag, parent: self, quantity: quantity)
-    @edges << edge
+    add_edge(edge)
     bag.add_edge(edge)
   end
 
@@ -66,7 +66,7 @@ class Bag
 
   def containing_bag_count
     child_edges.sum do |edge|
-      (edge.quantity + edge.quantity * edge.child.containing_bag_count)
+      edge.quantity + edge.quantity * edge.child.containing_bag_count
     end
   end
 end
