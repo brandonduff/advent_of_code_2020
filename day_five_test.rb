@@ -1,5 +1,3 @@
-require 'minitest/autorun'
-
 class String
   def lower_half?
     self == 'F' || self == 'L'

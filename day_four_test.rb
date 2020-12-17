@@ -1,6 +1,3 @@
-require 'minitest/autorun'
-require 'active_support/all'
-
 class Passport
   def self.from_string(string, field_level_validation: true)
     new(string.split.map(&:to_field), field_value_validation: field_level_validation)
@@ -95,6 +92,10 @@ class String
 end
 
 class DayFourTest < Minitest::Test
+  def setup
+    skip
+  end
+
   def test_passport_validates_required_fields
     missing_fields = Passport.from_string('ecl:gry')
     valid_passport = Passport.from_string('ecl:gry pid:860033327 eyr:2020 hcl:#fffffd byr:1937 iyr:2017 cid:147 hgt:183cm')
@@ -103,6 +104,7 @@ class DayFourTest < Minitest::Test
   end
 
   def test_part_one
+    skip
     result = input.map { |fields_string| Passport.from_string(fields_string, field_level_validation: false) }.count(&:valid?)
     assert_equal 254, result
   end
@@ -152,6 +154,7 @@ class DayFourTest < Minitest::Test
   end
 
   def test_examples
+    skip
     passports = "eyr:1972 cid:100
 hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
 
@@ -182,6 +185,7 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:09315471".split("\n
   end
 
   def test_part_two
+    skip
     result = input.map { |fields_string| Passport.from_string(fields_string) }.count(&:valid?)
     assert_equal 184, result
   end

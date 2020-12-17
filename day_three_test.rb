@@ -1,6 +1,3 @@
-require 'minitest/autorun'
-require 'forwardable'
-
 Point = Struct.new(:x, :y) do
   def +(other)
     self.class.new(x + other.x, y + other.y)
@@ -117,6 +114,7 @@ class DayThreeTest < Minitest::Test
   end
 
   def test_day_one_part_two
+    skip
     input = File.read('day_three_input.txt')
     map = Map.new(input)
     routes = [

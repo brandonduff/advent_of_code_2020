@@ -1,5 +1,3 @@
-require 'minitest/autorun'
-
 class String
   def &(other)
     (chars & other.chars).join
